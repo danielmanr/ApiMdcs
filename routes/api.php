@@ -2,26 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/medicamentos', function () {
-    return 'lista medicamentos';
-});
-
-Route::get('/medicamentos/{id}', function () {
-    return 'obtiene un medicamento';
-});
+use App\Http\Controllers\MedicamentosController;
+use App\http\Controllers\HistorialController;
+use App\http\Controllers\LaboratoriosController;
 
 
-Route::post('/medicamentos', function () {
-    return 'Creando Medicamento';
-});
-
-
-Route::put('/medicamentos/{id}', function () {
-    return 'Actualizando Medicamento';
-});
-
-
-Route::delete('/medicamentos/{id}', function () {
-    return 'Actualizando Medicamento';
-});
+Route::apiResource('/medicamentos',medicamentosController::class);
+Route::apiResource('/historial', HistorialController::class);
+Route::apiResource('/laboratorios', LaboratoriosController::class);
