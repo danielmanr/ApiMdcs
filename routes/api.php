@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\TipoMedicamentosController;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MedicamentosController;
-use App\http\Controllers\HistorialController;
 use App\http\Controllers\LaboratoriosController;
 
 
-Route::apiResource('/medicamentos',medicamentosController::class);
-Route::apiResource('/historial', HistorialController::class);
+Route::apiResource('/medicamentos',MedicamentosController::class);
+Route::apiResource('/usuarios', UsuarioController::class);
 Route::apiResource('/laboratorios', LaboratoriosController::class);
+Route::apiResource('/tipoMedicamentos',TipoMedicamentosController::class);

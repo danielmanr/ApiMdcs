@@ -28,7 +28,7 @@ class TipoMedicamento extends Model
     // Relación uno a uno con la tabla Medicamentos
     public function medicamento()
     {
-        return $this->belongsTo(Medicamento::class, 'medicamento_id', 'Id_Medicamento');
+        return $this->hasMany(Medicamento::class, 'tipoMedicamento_Id', 'Id_Medicamento');
     }
 
 }

@@ -27,6 +27,6 @@ class Laboratorio extends Model
     // Definir la relación con el modelo Medicamento
     public function medicamento()
     {
-        return $this->belongsTo(Medicamento::class, 'Id_Medicamento');
+        return $this->hasMany(Medicamento::class, 'Id_Laboratorio', 'Id_Laboratorio');
     }
 }

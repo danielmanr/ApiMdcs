@@ -21,7 +21,9 @@ class Medicamento extends Model
     protected $fillable = [
         'Nombre',
         'Concentracion',
-        'CodigoBarras'
+        'CodigoBarras',
+        'tipoMedicamento_Id',
+        'Id_Laboratorio'
     ];
 
     // Si no usas incrementing id en Laravel (lo que no es tu caso)
@@ -33,7 +35,7 @@ class Medicamento extends Model
     // Relación con la tabla laboratorios (uno a muchos)
     public function laboratorios()
     {
-        return $this->hasMany(Laboratorio::class, 'Id_Medicamento');
+        return $this->belongsTo(Laboratorio::class, 'Id_Laboratorio', 'Id_Laboratorio');
     }
 
     // Relación con la tabla historial (muchos a muchos)
@@ -47,7 +49,7 @@ class Medicamento extends Model
     // Relación con la tabla tipoMedicamentos (uno a uno)
     public function tipoMedicamento()
     {
-        return $this->hasOne(TipoMedicamento::class, 'medicamento_id', 'Id_Medicamento');
+        return $this->belongsTo(TipoMedicamento::class, 'tipoMedicamento_Id', 'Id_TipoMedicamento');
     }
 
 }
