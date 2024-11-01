@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Medicamento;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UsuarioController;
+use App\Models\Usuario;
 
 class MedicamentosController extends Controller
 {
@@ -129,6 +131,49 @@ class MedicamentosController extends Controller
         } catch (Exception $e) {
             Log::error('Error al eliminar el medicamento: ' . $e->getMessage());
             return response()->json(['error' => 'Error interno del servidor'], 500);
+        }
+    }
+
+    //metodo para buscar el codigo de barras
+    public function leerCodigoBarras(Request $request)
+    {
+        try
+        {
+            // Validación de datos
+            $request->validate([
+                'CodigoBarras' => 'sometimes|required|string|max:20',
+                'U_Uid' => 'string|required',
+                'fechaConsulta' => 'sometimes|required|date',
+            ]);
+
+            // Buscar medicamento por código de barras
+            $medicamento = Medicamento::with(['tipoMedicamento', 'laboratorios'])
+                ->where('CodigoBarras', $request->CodigoBarras)
+                ->firstOrFail();
+
+            // Buscar usuario directamente desde el modelo Usuario
+            $usuario = Usuario::where('U_uid', $request->U_Uid)->first(); // Asegúrate de que 'U_uid' es el nombre correcto de la columna en tu base de datos
+
+            // Verificar si el usuario fue encontrado
+            if (!$usuario) {
+                return response()->json(['message' => 'Usuario no encontrado'], 404);
+            }
+
+            // Guardar la relación en medicamentos_usuarios con la FechaConsulta
+            $usuario->medicamentos()->attach($medicamento->Id_Medicamento, [
+                'fechaConsulta' => $request->fechaConsulta ?? now(), // Usa la fecha proporcionada o la fecha actual
+            ]);
+
+            // Retornar el medicamento encontrado
+            return response()->json($medicamento, 200);
+        }
+        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+            return response()->json(['message' => 'Medicamento no encontrado'], 404);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json(['message' => 'Error al guardar la relación', 'error' => $e->getMessage()], 500);
         }
     }
 

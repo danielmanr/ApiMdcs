@@ -18,8 +18,17 @@ class UsuarioController extends Controller
 
     //metodo para buscar un usuario en especifico
     public function show($id){
-        $usuarios = Usuario::findOrfail($id);
-        return response()->json($usuarios,200);
+        try
+        {
+            $usuario = Usuario::findOrFail($id);
+            return response()->json($usuario, 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        } catch (\Exception $e)
+        {
+            return response()->json(['message' => 'Error al obtener el usuario', 'error' => $e->getMessage()], 500);
+        }
     }
 
     //metodo para guardar los usuarios
@@ -45,7 +54,7 @@ class UsuarioController extends Controller
         } catch (\Exception $e) {
             // Manejar la excepción y devolver un mensaje de error
             return response()->json([
-                'message' => 'Error al crear el medicamento.',
+                'message' => 'Error al asociar el usuario',
                 'error' => $e->getMessage() // Mensaje de error para depuración
             ], 500); // Código de estado 500 para error interno del servidor
         }
@@ -104,5 +113,23 @@ class UsuarioController extends Controller
                 'error' => $e->getMessage() // Mensaje de error para depuración
             ], 500); // Código de estado 500 para error interno del servidor
         }
+    }
+
+
+    public function buscarUsuarioUid($Uid)
+    {
+        try
+        {
+            $usuario = Usuario::where('U_Uid', $Uid)->first();
+            return $usuario;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
+        {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        } catch (\Exception $e)
+        {
+            return response()->json(['message' => 'Error al obtener el usuario', 'error' => $e->getMessage()], 500);
+        }
+
+
     }
 }

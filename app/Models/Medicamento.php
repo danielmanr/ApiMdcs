@@ -39,9 +39,9 @@ class Medicamento extends Model
     }
 
     // Relación con la tabla historial (muchos a muchos)
-    public function historial()
+    public function usuarios()
     {
-        return $this->belongsToMany(Historial::class, 'historial_medicamento', 'medicamento_id', 'historial_id')
+        return $this->belongsToMany(Usuario::class, 'medicamentos_usuarios', )
             ->withPivot('fechaConsulta');
     }
 
@@ -51,5 +51,10 @@ class Medicamento extends Model
     {
         return $this->belongsTo(TipoMedicamento::class, 'tipoMedicamento_Id', 'Id_TipoMedicamento');
     }
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
 }

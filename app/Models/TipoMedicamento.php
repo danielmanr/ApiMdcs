@@ -31,4 +31,9 @@ class TipoMedicamento extends Model
         return $this->hasMany(Medicamento::class, 'tipoMedicamento_Id', 'Id_Medicamento');
     }
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
 }
