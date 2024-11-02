@@ -15,3 +15,6 @@ Route::apiResource('/tipoMedicamentos',TipoMedicamentosController::class);
 
 // Ruta adicional para el método leerCodigoBarras
 Route::post('/medicamentos/leerCodigoBarras', [MedicamentosController::class, 'leerCodigoBarras']);
+
+// Ruta adicional para el metodo historiaUsuario
+Route::get('/medicamentos/historial/{u_uid}', [MedicamentosController::class, 'historiaUsuario']);

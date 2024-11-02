@@ -137,8 +137,7 @@ class MedicamentosController extends Controller
     //metodo para buscar el codigo de barras
     public function leerCodigoBarras(Request $request)
     {
-        try
-        {
+        try {
             // Validación de datos
             $request->validate([
                 'CodigoBarras' => 'sometimes|required|string|max:20',
@@ -166,15 +165,46 @@ class MedicamentosController extends Controller
 
             // Retornar el medicamento encontrado
             return response()->json($medicamento, 200);
-        }
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
-        {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Medicamento no encontrado'], 404);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Error al guardar la relación', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+        public function historiaUsuario($u_uid)
+        {
+            try {
+                // Buscar al usuario por U_Uid
+                $usuario = Usuario::where('U_Uid', $u_uid)->firstOrFail();
+
+                // Obtener los medicamentos relacionados, solo los nombres, y ordenados por fechaConsulta
+                $medicamentos = $usuario->medicamentos()
+                    ->select('Nombre', 'fechaConsulta') // Selecciona el nombre y la fecha de consulta
+                    ->orderBy('fechaConsulta', 'desc') // Orden descendente por fechaConsulta
+                    ->get();
+
+                // Preparar la respuesta JSON con el nombre del usuario y los nombres de los medicamentos
+                return response()->json([
+                    'Nombre' => $usuario->Nombre,
+                    'Apellido' => $usuario->Apellido,
+                    'Medicamentos' => $medicamentos->map(function ($medicamento) {
+                        return [
+                            'NombreUsuario' => $medicamento->Nombre,
+                            'FechaConsulta' => $medicamento->fechaConsulta,
+                        ];
+                    })
+                ], 200);
+
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                // Retornar un error si el usuario no es encontrado
+                return response()->json(['message' => 'Usuario no encontrado'], 404);
+            } catch (\Exception $e) {
+                // Manejar cualquier otro error
+                return response()->json(['message' => 'Error al obtener los medicamentos', 'error' => $e->getMessage()], 500);
+            }
+        }
+
 
 }
