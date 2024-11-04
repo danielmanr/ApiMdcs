@@ -181,7 +181,7 @@ class MedicamentosController extends Controller
 
                 // Obtener los medicamentos relacionados, solo los nombres, y ordenados por fechaConsulta
                 $medicamentos = $usuario->medicamentos()
-                    ->select('Nombre', 'fechaConsulta') // Selecciona el nombre y la fecha de consulta
+                    ->select('Id_Medicamento','Nombre', 'fechaConsulta') // Selecciona el nombre y la fecha de consulta
                     ->orderBy('fechaConsulta', 'desc') // Orden descendente por fechaConsulta
                     ->get();
 
@@ -191,6 +191,7 @@ class MedicamentosController extends Controller
                     'Apellido' => $usuario->Apellido,
                     'Medicamentos' => $medicamentos->map(function ($medicamento) {
                         return [
+                            'Id_Medicamento' => $medicamento->Id_Medicamento,
                             'NombreUsuario' => $medicamento->Nombre,
                             'FechaConsulta' => $medicamento->fechaConsulta,
                         ];
