@@ -20,7 +20,7 @@ class UsuarioController extends Controller
     public function show($id){
         try
         {
-            $usuario = Usuario::findOrFail($id);
+            $usuario = Usuario::where('U_Uid',$id)->first();
             return response()->json($usuario, 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e)
         {
