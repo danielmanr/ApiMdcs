@@ -173,17 +173,27 @@ class MedicamentosController extends Controller
     }
 
 
-        public function historiaUsuario($u_uid)
+        public function historiaUsuario(Request $request)
         {
             try {
+                $request->validate([
+                    'U_Uid' => 'string|required',
+                    'top' => 'sometimes|required|numeric',
+                ]);
                 // Buscar al usuario por U_Uid
-                $usuario = Usuario::where('U_Uid', $u_uid)->firstOrFail();
+                $usuario = Usuario::where('U_Uid', $request->U_Uid)->firstOrFail();
 
                 // Obtener los medicamentos relacionados, solo los nombres, y ordenados por fechaConsulta
-                $medicamentos = $usuario->medicamentos()
-                    ->select('Id_Medicamento','Nombre', 'fechaConsulta') // Selecciona el nombre y la fecha de consulta
-                    ->orderBy('fechaConsulta', 'desc') // Orden descendente por fechaConsulta
-                    ->get();
+                $query = $usuario->medicamentos()
+                    ->select('Id_Medicamento','Nombre', 'fechaConsulta')
+                    ->orderBy('fechaConsulta', 'desc');
+
+                // Aplicar el filtro de 'top' si se proporciona
+                if ($request->top) {
+                    $query->limit($request->top);
+                }
+
+                $medicamentos = $query->get();
 
                 // Preparar la respuesta JSON con el nombre del usuario y los nombres de los medicamentos
                 return response()->json([
@@ -192,7 +202,7 @@ class MedicamentosController extends Controller
                     'Medicamentos' => $medicamentos->map(function ($medicamento) {
                         return [
                             'Id_Medicamento' => $medicamento->Id_Medicamento,
-                            'NombreUsuario' => $medicamento->Nombre,
+                            'NombreMedicamento' => $medicamento->Nombre,
                             'FechaConsulta' => $medicamento->fechaConsulta,
                         ];
                     })
