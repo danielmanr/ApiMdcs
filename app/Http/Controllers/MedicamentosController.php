@@ -150,6 +150,19 @@ class MedicamentosController extends Controller
                 ->where('CodigoBarras', $request->CodigoBarras)
                 ->firstOrFail();
 
+            //Formatear la informacion necesaria
+            $resultado = [
+                'Id_Medicamento' => $medicamento->Id_Medicamento,
+                'Nombre' => $medicamento->Nombre,
+                'Concentracion' => $medicamento->Concentracion,
+                'CodigoBarras' => $medicamento->CodigoBarras,
+                'tipoMedicamento_Id' => $medicamento->tipoMedicamento_Id,
+                'Id_Laboratorio' => $medicamento->Id_Laboratorio,
+                'TipoMedicamento' => $medicamento->tipoMedicamento ? $medicamento->tipoMedicamento->TipoMedicamento : 'No asignado',
+                'ContraIndicacion' => $medicamento->tipoMedicamento ? $medicamento->tipoMedicamento->ContraIndicacion : 'No asignado',
+                'NombreLaboratorio' => $medicamento->laboratorios ? $medicamento->laboratorios->NombreLaboratorio : 'No asignado',
+            ];
+
             // Buscar usuario directamente desde el modelo Usuario
             $usuario = Usuario::where('U_uid', $request->U_Uid)->first(); // Asegúrate de que 'U_uid' es el nombre correcto de la columna en tu base de datos
 
@@ -164,7 +177,7 @@ class MedicamentosController extends Controller
             ]);
 
             // Retornar el medicamento encontrado
-            return response()->json($medicamento, 200);
+            return response()->json($resultado, 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Medicamento no encontrado'], 404);
         } catch (\Exception $e) {
