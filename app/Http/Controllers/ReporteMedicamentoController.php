@@ -31,7 +31,7 @@ class ReporteMedicamentoController extends Controller
             ]);
 
             // Responder con el reporte creado
-            return response()->json($reporte, 201);
+            return response()->json($reporte, 200);
 
         } catch (Exception $e) {
             // Manejo de errores
