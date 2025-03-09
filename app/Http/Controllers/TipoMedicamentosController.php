@@ -50,7 +50,7 @@ class TipoMedicamentosController extends Controller
             // Validación de datos
             $request->validate([
                 'TipoMedicamento' => 'required|string|max:50',
-                'ContraIndicacion' => 'required|string|max:50',
+                'ContraIndicacion' => 'required|string|max:255',
             ]);
 
             // Crear el tipo de medicamento
